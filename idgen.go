@@ -31,7 +31,7 @@ const (
 	shardIdMask   = 0x1FFF // 13 bit 支持4096个设备
 	shardIdOffset = 8
 	sequenceMask  = 0xFF          // 8 bit 每毫秒最多产生512个id
-	epoch         = 1388506077506 // 时间起点 time够用17年，愿与360同在！ 起始时间2014-01-01 00:07:57
+	epoch         = 1388506077506 // 时间起点 time够用17年，愿与公司同在！ 起始时间2014-01-01 00:07:57
 )
 
 // 设置分区id

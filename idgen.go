@@ -9,9 +9,9 @@ import (
 
 // reference http://instagram-engineering.tumblr.com/post/10853187575/sharding-ids-at-instagram#notes
 var (
-	version               uint64 // 范围0-15
-	shardId               uint64 // 范围0-4095
-	sequence              uint64 // 范围0-255
+	version               uint64 // 范围0-1
+	shardId               uint64 // 范围0-1024
+	sequence              uint64 // 范围0-16383
 	lastSequenceStartTime uint64
 	mutex                 sync.Mutex
 )
@@ -24,14 +24,14 @@ func init() {
 }
 
 const (
-	versionMask   = 0xF // 4bit
-	versionOffset = 60
+	versionMask   = 0x1 // 4bit
+	versionOffset = 63
 	timeMask      = 0x7FFFFFFFFF // 39 bit
-	timeOffset    = 21
-	shardIdMask   = 0x1FFF // 13 bit 支持4096个设备
-	shardIdOffset = 8
-	sequenceMask  = 0xFF          // 8 bit 每毫秒最多产生512个id
-	epoch         = 1388506077506 // 时间起点 time够用17年，愿与公司同在！ 起始时间2014-01-01 00:07:57
+	timeOffset    = 24
+	shardIdMask   = 0x3FF // 10 bit 支持1024个设备
+	shardIdOffset = 14
+	sequenceMask  = 0x3FFF        // 14 bit 每毫秒最多产生16384个id
+	epoch         = 1533550162685 // 时间起点 time够用17年，愿与公司同在！ 起始时间2018-08-06 18:09:22.685
 )
 
 // 设置分区id
@@ -52,7 +52,7 @@ func SetVersion(v int) error {
 	return nil
 }
 
-// 获取id |version:4bit|timestamp:39bit|shardId:13bit|squence:8bit
+// 获取id |version:1bit|timestamp:39bit|shardId:10bit|squence:14bit
 func GenId() uint64 {
 	mutex.Lock()
 	nowMilli := genNowMillisecond()
